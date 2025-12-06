@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Products - ShopEasy</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Montserrat:wght@700;800&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #f72585;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --success: #4cc9f0;
+            --shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        body {
+            background-color: #f9f9f9;
+            color: var(--dark);
+            min-height: 100vh;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .nav-links a.active {
+            background-color: var(--accent);
+        }
+
+        /* Upload Container */
+        .upload-container {
+            max-width: 1000px;
+            margin: 3rem auto;
+            padding: 0 2rem;
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .upload-header {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .upload-header h1 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            color: var(--secondary);
+            margin-bottom: 1rem;
+        }
+
+        .upload-header p {
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        /* Upload Form */
+        .upload-form {
+            background: white;
+            border-radius: 15px;
+            padding: 3rem;
+            box-shadow: var(--shadow);
+            animation: slideUp 0.8s ease-out 0.2s both;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.9rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        .full-width {
+            grid-column: 1 / -1;
+        }
+
+        .image-upload {
+            border: 2px dashed #ddd;
+            border-radius: 8px;
+            padding: 2rem;
+            text-align: center;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .image-upload:hover {
+            border-color: var(--primary);
+            background-color: rgba(67, 97, 238, 0.05);
+        }
+
+        .image-upload i {
+            font-size: 3rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .image-upload p {
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .image-upload span {
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+
+        #imagePreview {
+            display: none;
+            margin-top: 1rem;
+            max-width: 200px;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: var(--shadow);
+        }
+
+        #imagePreview img {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        /* Form Actions */
+        .form-actions {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            margin-top: 3rem;
+        }
+
+        .btn {
+            padding: 1rem 2.5rem;
+            border-radius: 8px;
+            border: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(67, 97, 238, 0.4);
+        }
+
+        .btn-secondary {
+            background-color: var(--light);
+            color: var(--dark);
+            border: 1px solid #ddd;
+        }
+
+        .btn-secondary:hover {
+            background-color: #e9ecef;
+            transform: translateY(-3px);
+        }
+
+        /* Uploaded Products Preview */
+        .uploaded-preview {
+            margin-top: 4rem;
+            animation: fadeIn 0.8s ease-out 0.4s both;
+        }
+
+        .preview-header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .preview-header h2 {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2rem;
+            color: var(--secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .preview-header p {
+            color: var(--gray);
+        }
+
+        .preview-container {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .product-preview {
+            display: grid;
+            grid-template-columns: 200px 1fr;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .product-preview {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 10px;
+            box-shadow: var(--shadow);
+        }
+
+        .preview-details h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+
+        .preview-price {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .preview-description {
+            color: var(--gray);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .preview-meta {
+            display: flex;
+            gap: 2rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: var(--gray);
+        }
+
+        .meta-item i {
+            color: var(--primary);
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .preview-actions .btn {
+            padding: 0.7rem 1.5rem;
+            font-size: 1rem;
+        }
+
+        /* Success Message */
+        .success-message {
+            display: none;
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(to right, #4CAF50, #8BC34A);
+            color: white;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            z-index: 1001;
+            animation: slideInRight 0.5s ease-out;
+        }
+
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 2rem 2rem 1.5rem;
+            margin-top: 4rem;
+        }
+
+        .footer-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1.5rem;
+            color: var(--light);
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+
+        .footer-column h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 40px;
+            height: 3px;
+            background-color: var(--accent);
+        }
+
+        .footer-column p, .footer-column a {
+            color: #adb5bd;
+            line-height: 1.8;
+            transition: var(--transition);
+            text-decoration: none;
+        }
+
+        .footer-column a:hover {
+            color: var(--accent);
+            padding-left: 5px;
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            color: #adb5bd;
+            font-size: 0.9rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            z-index: 10000;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            animation: slideIn 0.3s ease-out;
+            border-left: 4px solid #4CAF50;
+        }
+        .toast-error { border-left-color: #F44336; }
+        .toast-content {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .toast i { font-size: 1.2rem; }
+        .toast-success i { color: #4CAF50; }
+        .toast-error i { color: #F44336; }
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        @keyframes slideOut {
+            from { transform: translateX(0); opacity: 1; }
+            to { transform: translateX(100%); opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="nav-container">
+            <div class="logo">
+                <i class="fas fa-shopping-bag"></i>
+                ShopEasy
+            </div>
+            
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="products.html">Products</a></li>
+                <li><a href="upload.html" class="active">Upload Products</a></li>
+            </ul>
+        </div>
+    </header>
+
+    <!-- Upload Container -->
+    <div class="upload-container">
+        <div class="upload-header">
+            <h1>Upload New Product</h1>
+            <p>Add your product details below. Once uploaded, the product will be available on the products page.</p>
+        </div>
+
+        <!-- Upload Form -->
+        <form id="productUploadForm" class="upload-form">
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="productName">Product Name *</label>
+                    <input type="text" id="productName" placeholder="Enter product name" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productPrice">Price ($) *</label>
+                    <input type="number" id="productPrice" placeholder="0.00" step="0.01" min="0" required>
+                </div>
+            </div>
+            
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="productCategory">Category *</label>
+                    <select id="productCategory" required>
+                        <option value="">Select category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="fashion">Fashion</option>
+                        <option value="home">Home & Kitchen</option>
+                        <option value="beauty">Beauty & Health</option>
+                        <option value="sports">Sports & Outdoors</option>
+                        <option value="books">Books & Media</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="productStock">Stock Quantity *</label>
+                    <input type="number" id="productStock" placeholder="0" min="0" required>
+                </div>
+            </div>
+            
+            <div class="form-group full-width">
+                <label for="productDescription">Product Description *</label>
+                <textarea id="productDescription" placeholder="Enter detailed product description" required></textarea>
+            </div>
+            
+            <div class="form-group full-width">
+                <label>Product Image *</label>
+                <div class="image-upload" id="imageUploadArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Click to upload product image</p>
+                    <span>JPG, PNG or GIF (Max 2MB)</span>
+                    <input type="file" id="productImage" accept="image/*" style="display: none;" required>
+                </div>
+                <div id="imagePreview">
+                    <img src="" alt="Product Preview">
+                </div>
+            </div>
+            
+            <div class="form-actions">
+                <button type="reset" class="btn btn-secondary">
+                    <i class="fas fa-redo"></i> Reset Form
+                </button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-upload"></i> Upload Product
+                </button>
+            </div>
+        </form>
+
+        <!-- Uploaded Products Preview -->
+        <div class="uploaded-preview" id="uploadedPreview" style="display: none;">
+            <div class="preview-header">
+                <h2>Product Uploaded Successfully!</h2>
+                <p>This is how your product will appear on the website</p>
+            </div>
+            
+            <div class="preview-container">
+                <div class="product-preview">
+                    <img id="previewImage" src="" alt="Product Image" class="preview-image">
+                    
+                    <div class="preview-details">
+                        <h3 id="previewName">Product Name</h3>
+                        <div class="preview-price" id="previewPrice">$0.00</div>
+                        
+                        <div class="preview-meta">
+                            <div class="meta-item">
+                                <i class="fas fa-tag"></i>
+                                <span id="previewCategory">Category</span>
+                            </div>
+                            <div class="meta-item">
+                                <i class="fas fa-box"></i>
+                                <span id="previewStock">0 in stock</span>
+                            </div>
+                        </div>
+                        
+                        <p class="preview-description" id="previewDescription">Product description will appear here.</p>
+                        
+                        <div class="preview-actions">
+                            <button class="btn btn-primary" onclick="viewOnProductsPage()">
+                                <i class="fas fa-eye"></i> View on Products Page
+                            </button>
+                            <button class="btn btn-secondary" onclick="uploadAnother()">
+                                <i class="fas fa-plus"></i> Upload Another
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="preview-header">
+                <h3>Upload More Products</h3>
+                <p>You can upload more products or manage your existing products</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-container">
+            <div class="footer-column">
+                <h3>ShopEasy Admin</h3>
+                <p>Manage your products and inventory with our easy-to-use upload system.</p>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Quick Links</h3>
+                <p><a href="index.html">Home</a></p>
+                <p><a href="products.html">Products Page</a></p>
+                <p><a href="upload.html">Upload Products</a></p>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Help & Support</h3>
+                <p><a href="#">Upload Guidelines</a></p>
+                <p><a href="#">Product Image Requirements</a></p>
+                <p><a href="#">Contact Support</a></p>
+            </div>
+            
+            <div class="footer-column">
+                <h3>Contact Info</h3>
+                <p><i class="fas fa-phone"></i> +92 341 5872278</p>
+                <p><i class="fas fa-envelope"></i> admin@shopeasy.com</p>
+            </div>
+        </div>
+        
+        <div class="copyright">
+            <p>&copy; 2023 ShopEasy Admin Panel. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        // Image upload preview - FIXED
+        const imageUploadArea = document.getElementById('imageUploadArea');
+        const productImageInput = document.getElementById('productImage');
+        const imagePreview = document.getElementById('imagePreview');
+        const previewImage = document.getElementById('previewImage');
+        let uploadedImageData = null;
+        
+        imageUploadArea.addEventListener('click', function() {
+            productImageInput.click();
+        });
+        
+        productImageInput.addEventListener('change', function(e) {
+            if (e.target.files.length > 0) {
+                const file = e.target.files[0];
+                
+                // Check file size (max 2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    showToast('File size should be less than 2MB', 'error');
+                    return;
+                }
+                
+                const reader = new FileReader();
+                
+                reader.onload = function(event) {
+                    uploadedImageData = event.target.result;
+                    imagePreview.style.display = 'block';
+                    imagePreview.querySelector('img').src = uploadedImageData;
+                    previewImage.src = uploadedImageData;
+                    
+                    // Change upload area appearance
+                    imageUploadArea.innerHTML = `
+                        <i class="fas fa-check-circle" style="color: #4CAF50;"></i>
+                        <p>Image selected: ${file.name}</p>
+                        <span>Click to change image</span>
+                    `;
+                    imageUploadArea.style.borderColor = '#4CAF50';
+                    imageUploadArea.style.backgroundColor = 'rgba(76, 175, 80, 0.05)';
+                };
+                
+                reader.readAsDataURL(file);
+            }
+        });
+        
+        // Generate unique ID
+        function generateProductId() {
+            return Date.now();
+        }
+        
+        // Form submission - FIXED
+        document.getElementById('productUploadForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Get form values
+            const productName = document.getElementById('productName').value;
+            const productPrice = document.getElementById('productPrice').value;
+            const productCategory = document.getElementById('productCategory').value;
+            const productStock = document.getElementById('productStock').value;
+            const productDescription = document.getElementById('productDescription').value;
+            
+            // Validate image
+            if (!uploadedImageData) {
+                showToast('Please select a product image', 'error');
+                return;
+            }
+            
+            // Validate all fields
+            if (!productName || !productPrice || !productCategory || !productStock || !productDescription) {
+                showToast('Please fill all required fields', 'error');
+                return;
+            }
+            
+            // Create product object
+            const product = {
+                id: generateProductId(),
+                name: productName,
+                price: parseFloat(productPrice),
+                category: productCategory,
+                stock: parseInt(productStock),
+                description: productDescription,
+                image: uploadedImageData,
+                date: new Date().toISOString()
+            };
+            
+            // Get existing products from localStorage
+            let products = JSON.parse(localStorage.getItem('uploadedProducts')) || [];
+            
+            // Add new product
+            products.push(product);
+            
+            // Save to localStorage
+            localStorage.setItem('uploadedProducts', JSON.stringify(products));
+            
+            // Update preview
+            document.getElementById('previewName').textContent = productName;
+            document.getElementById('previewPrice').textContent = $${parseFloat(productPrice).toFixed(2)};
+            document.getElementById('previewCategory').textContent = productCategory;
+            document.getElementById('previewStock').textContent = ${productStock} in stock;
+            document.getElementById('previewDescription').textContent = productDescription;
+            
+            // Show success message
+            showToast('Product uploaded successfully!', 'success');
+            
+            // Show preview section
+            document.getElementById('uploadedPreview').style.display = 'block';
+            
+            // Scroll to preview
+            document.getElementById('uploadedPreview').scrollIntoView({ behavior: 'smooth' });
+            
+            // Reset form
+            resetForm();
+        });
+        
+        // Reset form function
+        function resetForm() {
+            document.getElementById('productUploadForm').reset();
+            uploadedImageData = null;
+            imageUploadArea.innerHTML = `
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Click to upload product image</p>
+                <span>JPG, PNG or GIF (Max 2MB)</span>
+            `;
+            imageUploadArea.style.borderColor = '#ddd';
+            imageUploadArea.style.backgroundColor = '';
+            imagePreview.style.display = 'none';
+        }
+        
+        // View on products page
+        function viewOnProductsPage() {
+            window.location.href = 'products.html';
+        }
+        
+        // Upload another product
+        function uploadAnother() {
+            document.getElementById('uploadedPreview').style.display = 'none';
+            document.getElementById('productUploadForm').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Form reset handler
+        document.getElementById('productUploadForm').addEventListener('reset', function() {
+            resetForm();
+        });
+        
+        // Toast notification function
+        function showToast(message, type) {
+            // Remove existing toast
+            const existingToast = document.querySelector('.toast');
+            if (existingToast) existingToast.remove();
+            
+            // Create new toast
+            const toast = document.createElement('div');
+            toast.className = toast toast-${type};
+            toast.innerHTML = `
+                <div class="toast-content">
+                    <i class="fas fa-${type === 'success' ? 'check-circle' : 'exclamation-circle'}"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+            
+            document.body.appendChild(toast);
+            
+            // Remove toast after 3 seconds
+            setTimeout(() => {
+                toast.style.animation = 'slideOut 0.3s ease-out forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+        
+        // Check for existing products on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const products = JSON.parse(localStorage.getItem('uploadedProducts')) || [];
+            console.log('Existing uploaded products:', products.length);
+        });
+    </script>
+</body>
+</html>
